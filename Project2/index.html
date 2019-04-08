@@ -1,0 +1,554 @@
+<!--
+*   Vincent Cheng
+*   Client Programming
+*   jQuery, Project II
+-->
+<!--*************************************
+* https://speckyboy.com/free-jquery-plugins/
+* PLugin avgrund: http://labs.voronianski.com/jquery.avgrund.js/
+* Plugin topbutton: https://www.jqueryscript.net/animation/Back-To-Top-Smooth-Transition-TopButton.html
+* Plugin fulpage: https://alvarotrigo.com/fullPage/
+* Plugin fakeloader: http://joaopereirawd.github.io/fakeLoader.js/
+* Map, contact, api, startercode, proxy server: myCourses
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>IST DEPT at RIT</title>
+  <script src="https://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> <!-- fakeloader reference -->
+  <!-- back to top button plugin -->
+  <script>
+    $(document).ready(function() {
+      //Top Button
+      $.topbutton({
+        htlm: "<i>Top</i>", //String
+        scrollAndShow: false, //Boolean
+        scrollSpeed: 150 //Number, Set the duration of the animation.
+      });
+    });
+  </script> <!-- END -->
+
+  <!-- Plugin JS -->
+  <script type="text/javascript" src="assets/js/fullpage.js"></script>
+  <!-- Plugin  -->
+  <link rel="stylesheet" type="text/css" href="assets/css/fullpage.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css/avgrund.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css/fakeLoader.css" />
+
+    <!--[if IE 7]>
+			<script type="text/javascript">
+				console.log("This is IE 9");
+				var testIE7 = true;
+			</script>
+		<![endif]-->
+		<!--[if lt IE 9]>
+			<script type="text/javascript">
+				window.location.replace("http://outdatedbrowser.com/en");
+			</script>
+		<![endif]-->
+
+  <script type="text/javascript">
+    //api:  http://www.ist.rit.edu/api/
+
+    $(document).ready(function() {
+      /*********** About ***********/
+      myXhr('get', {path: '/about/'}, '#section1').done(function(json) {
+        var x = "";
+        x += "<h2>" + json.title + "</h2>"; // "title": "Leveraging technology to solve problems",
+        x += "<p class='p_Author'>" + json.description + "</p>"; // "description"
+        x += "<p class='p_Author'>" + json.quote + "</p>"; // "quote"
+        x += "<p class='author'>" + json.quoteAuthor + "</p>"; // "quoteAuthor"
+        $("#section1").html(x);
+      }); /**End**/
+
+      /*********** Degree ***********/
+      myXhr("get", {"path": "/degrees/"}, "#section2").done(function(json) {
+        var x = ""; // Undergraduate
+        var y = ""; // Graduate
+        var z = ""; // Concentrations
+
+        // Undergraduate Information
+        x += "<div class='fp-tableCell'><div class='intro'>"; // table
+        x += "<h1 class ='title_font_O'>Degrees</h1>";
+        x += "<h2 class='degreeFont'>Undergraduate Degrees</h2>";
+
+        $.each(json.undergraduate, function(i, item) {
+          x += "<button class ='degreesButton' onclick=\"openDialog('" + item.degreeName + "');\">" + item.title + "</button>";
+          x += "<p>" + item.description + "</p>";
+          z += "<aside id=\"default-popup-" + item.degreeName + "\" class=\"avgrund-popup popup_degrees\">"
+          z += "<h3>" + item.title + "</h3><h3>Concentrations:</h3>";
+          z += "<p>" + item.concentrations + "</p>";
+          z += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+        });
+        x += "</div>";
+
+        // Graduate Information
+        x += "<div class='degree_column'>";
+        x += "<h2 class='degreeFont'>Graduate Degrees</h2>";
+        $.each(json.graduate, function(i, item) {
+          // Any undefined from JSON will be ignore
+          if (item.title != null) {
+            x += "<button class ='degreesButton' onclick=\"openDialog('" + item.degreeName + "');\">" + item.title + "</button>";
+            x += "<p>" + item.description + "</p>";
+            z += "<aside id=\"default-popup-" + item.degreeName + "\" class=\"avgrund-popup popup_degrees\">"
+            z += "<h3>" + item.title + "</h3><h3>Concentrations:</h3>";
+            z += "<p>" + item.concentrations + "</p>";
+            z += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+          }
+        });
+        x += "</div></div></div>";
+        $("#section2").html(x);
+        $("#section2").append(z);
+        //$("#avgrund-class").html(z);
+      }); /**End**/
+
+      /*********** Minors ***********/
+      myXhr("get", {"path": "/minors/"}, "#section3").done(function(json) {
+        var x = "";
+
+        x += "<div class='fp-tableCell'><div class='intro'>";
+        x += "<h2 class='title_font_W'>Minors</h2>";
+
+        $.each(json.UgMinors, function(i, item) {
+          x += "<button class='minorButton' onclick=\"openDialog('" + item.name + "');\">" + item.title + "</button>";
+          x += "<aside id=\"default-popup-" + item.name + "\" class=\"avgrund-popup popup_minors\">";
+          x += "<h3>" + item.title + "</h3>";
+          x += "<h3>Description:</h3><p>" + item.description + "</p>";
+          x += "<p>" + item.courses + "</p>";
+          x += "<p>" + item.note + "</p>";
+          x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+
+        });
+        x += "</div></div>";
+        $("#section3").html(x);
+      });
+      /*********** Employment ***********/
+      myXhr("get", {"path": "/employment/"}, "#section4").done(function(json) {
+        var x = "";
+
+        // Introduction
+        x += "<div class='fp-tableCell'><div class=\"intro\">";
+        x += "<h1>" + json.introduction.title + "</h1>";
+        $.each(json.introduction.content, function(i, item) {
+          x += "<h2 class='title_font_O'>" + item.title + "</h2>";
+          x += "<p>" + item.description + "</p>";
+        });
+
+        // Statistics
+        x += "<h2 class='title_font_O'>" + json.degreeStatistics.title + "</h2>";
+        x += "<div class='column_container'>";
+
+        $.each(json.degreeStatistics.statistics, function(i, item) {
+          x += "<div class='statistics_column'>";
+          x += "<p>" + item.value + "</p>";
+          x += "<p>" + item.description + "</p>";
+          x += "</div>";
+        });
+        x += "</div>";
+
+        // Employers
+        x += "<h2 class='title_font_O'>" + json.employers.title + "</h2>";
+        x += "<p class='employer'>" + json.employers.employerNames.toString().replace(/,/g, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;") + "</p>";
+        // Careers
+        x += "<h2 class='title_font_O'>" + json.careers.title + "</h2>";
+        x += "<p class='careers'>" + json.careers.careerNames.toString().replace(/,/g, "&nbsp;&nbsp;&nbsp;&nbsp;") + "</p>";
+        x += "<div class='column_container'><div class='employment_column'>";
+        x += "<button class='coop_employment_table' onclick=\"openDialog('coop-table');\">" + json.coopTable.title + "</button> <br/>";
+        // CoopTable
+        x += "<aside id=\"default-popup-coop-table\" class=\"avgrund-popup\">";
+        x += '<table id="example" class="display" cellspacing="0" width="100%">';
+        x += "<thead><tr><th>Employer</th><th>Degree</th><th>City</th><th>Term</th></tr></thead>";
+        x += "<tfoot><tr><th>Employer</th><th>Degree</th><th>City</th><th>Term</th></tr></tfoot>";
+        x += "<tbody>";
+
+        $.each(json.coopTable.coopInformation, function(i, item) {
+          x += "<tr>";
+          x += "<td>" + item.employer + "</td>";
+          x += "<td>" + item.degree + "</td>";
+          x += "<td>" + item.city + "</td>";
+          x += "<td>" + item.term + "</td>";
+          x += "</tr>";
+        });
+
+        x += "</tbody></table><br/>";
+        x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+        x += "</div>";
+        x += "<div class='employment_column'>";
+        x += "<button class='coop_employment_table' onclick=\"openDialog('employment-table');\">" + json.employmentTable.title + "</button> <br/>";
+
+        // Employment Table
+        x += "<div class='full_pop'>";
+        x += "<aside id=\"default-popup-employment-table\" class=\"avgrund-popup\">";
+        x += '<table id="employmentTable" class="display" cellspacing="0" width="100%">';
+        x += "<thead><tr><th>Employer</th><th>Degree</th><th>City</th><th>Title</th><th>Start Date</th></tr></thead>";
+        x += "<tfoot><tr><th>Employer</th><th>Degree</th><th>City</th><th>Title</th><th>Start Date</th></tr></tfoot>";
+        x += "<tbody>";
+
+        $.each(json.employmentTable.professionalEmploymentInformation, function(i, item) {
+          x += "<tr>";
+          x += "<td>" + item.employer + "</td>";
+          x += "<td>" + item.degree + "</td>";
+          x += "<td>" + item.city + "</td>";
+          x += "<td>" + item.title + "</td>";
+          x += "<td>" + item.startDate + "</td>";
+          x += "</tr>";
+        });
+        x += "</tbody></table><br/>";
+        x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside></div>';
+        x += "</div></div></div></div>";
+        $("#section4").html(x);
+        $("#section4").append(table);
+      }); /** END **/
+
+      /*********** Map ***********/
+      var map = "";
+      map += "<h1 class='title_font_W'>Seek the World for Co-Op</h1>";
+      map += '<iframe id="frame" src="http://ist.rit.edu/api/map/"></iframe>';
+      $('#section5').html(map);
+
+      /*********** People ***********/
+      myXhr('get', {path: '/people/'}, '#section6').done(function(json) {
+        var x = ''; // Faculty
+        var y = ''; // Staff
+        x += "<div class='fp-tableCell'><div class=\"intro\">";
+        x += "<h1>" + json.title + "</h1>";
+        x += "<h1> Faculty </h1>";
+        // Faculty
+        $.each(json.faculty, function(i, item) {
+          //item === this
+          x += "<button class='people_button' onclick=\"openDialog('" + item.username + "');\">" + item.name + "</button>";
+          x += "<aside id=\"default-popup-" + item.username + "\" class=\"avgrund-popup popup_faculty\" >";
+          x += "<h3>" + item.name + "</h3>";
+          if (item.tagline == "") {
+            x += "<h3>" + item.title + "</h3>";
+          } else {
+            x += "<h3>" + item.title + "</h3>"
+          }
+          x += "<div class='people_container'>";
+          x += "<div class='people_img'><img src='" + item.imagePath + "' alt='" + item.username + "'/></div>";
+          x += "<div class='people_content'>";
+          x += "<p>" + item.office + "</p>";
+          x += "<p>" + item.website + "</p>";
+          x += "<p>" + item.phone + "</p>";
+          x += "<p>" + item.email + "</p>";
+          x += "<p>" + item.twitter + "</p>";
+          x += "<p>" + item.facebook + "</p>";
+          x += "</div></div>";
+          x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+        });
+        x += "</div></div>";
+        $('#section6').html(x);
+
+        // Staff
+        y += "<div class='fp-tableCell'><div class=\"intro\">";
+        y += "<h1>" + json.title + "</h1>";
+        y += "<h1> Staff </h1>";
+
+        $.each(json.staff, function(i, item) {
+          y += "<button class='people_button' onclick=\"openDialog('" + item.username + "');\">" + item.name + "</button>";
+          y += "<aside id=\"default-popup-" + item.username + "\" class=\"avgrund-popup popup_staff\">";
+          y += "<h3>" + item.name + "</h3>";
+
+          if (item.tagline == "") {
+            y += "<h3>" + item.title + "</h3>";
+          } else {
+            y += "<h3>" + item.title + " | " + item.tagline + "</h3>";
+          }
+          y += "<div class='people_container'>";
+          y += "<div class='people_img'><img src='" + item.imagePath + "' alt='" + item.username + "'/></div>";
+          y += "<div class='people_content'>";
+          y += "<p>" + item.office + "</p>";
+          y += "<p>" + item.website + "</p>";
+          y += "<p>" + item.phone + "</p>";
+          y += "<p>" + item.email + "</p>";
+          y += "<p>" + item.twitter + "</p>";
+          y += "<p>" + item.facebook + "</p>";
+
+          y += "</div></div>";
+          y += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+        });
+        y += "</div></div>";
+        $("#section6").append(y);
+      });
+    }); /** END **/
+
+    /*********** Research ***********/
+    myXhr("get", {"path": "/research/"}, '#section7').done(function(json) {
+      var x = ""; // Interest Areas
+      var y = ""; // Faculty Area
+      // Interest Areas
+      x += "<div class='fp-tableCell'><div class=\"intro\">";
+      x += "<h1 class ='title_font_W'>Faculty Research: Areas of Interest</h1>";
+
+      $.each(json.byInterestArea, function(i, item) {
+        x += "<button class='interest_area_button' onclick=\"openDialog('" + item.areaName.toString().replace(" ", "-") + "');\">" + item.areaName + "</button>";
+        x += "<aside id=\"default-popup-" + item.areaName.toString().replace(" ", "-") + "\" class=\"avgrund-popup popup_interest_area\">";
+        x += "<h3>" + item.areaName + "</h3>";
+        x += "<li>" + item.citations + "</li>";
+        x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+      });
+      x += "</div></div>";
+      $("#section7").html(x);
+
+      // Lookup by Faculty
+      y += "<div class='fp-tableCell'><div class=\"intro\">";
+      y += "<h1 class ='title_font_W'>Faculty Research: Lookup by Faculty</h1>";
+
+      $.each(json.byFaculty, function(i, item) {
+        y += "<button class='interest_area_button' onclick=\"openDialog('area-" + item.username + "');\">" + item.facultyName + "</button>";
+        y += "<aside id=\"default-popup-area-" + item.username + "\" class=\"avgrund-popup popup_faculty_area\">";
+        y += "<h3>" + item.facultyName + "</h3>";
+        y += "<li>" + item.citations + "</li>";
+        y += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+      });
+
+      y += "</div></div>";
+      $("#section7").append(y);
+    }); /**End**/
+
+    /*********** Resources ***********/
+    myXhr("get", {"path": "/resources/"}, '#section8').done(function(json) {
+      var x = "";
+      x += "<div class='fp-tableCell'><div class=\"intro\">";
+      x += "<h1>" + json.title + "</h1>";
+      x += "<p>" + json.subTitle + "</p>";
+
+      // Study Aboard
+      x += "<button class='resources_button' onclick=\"openDialog('studyAbroad');\">" + json.studyAbroad.title + "</button>";
+      x += "<aside id=\"default-popup-studyAbroad\" class=\"avgrund-popup popup_resources\">";
+      x += "<h3>" + json.studyAbroad.title + "</h3>";
+      x += "<p>" + json.studyAbroad.description + "</p>";
+
+      $.each(json.studyAbroad.places, function(i, item) {
+        x += "<p>" + item.nameOfPlace + " - " + item.description + "</p>";
+      });
+      x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+
+      // All Advisors/Advising Center
+      // Student Services
+      x += "<button class='resources_button' onclick=\"openDialog('advising');\">" + json.studentServices.title + "</button>";
+      x += "<aside id=\"default-popup-advising\" class=\"avgrund-popup popup_resources\">";
+
+      // Academic
+      x += "<h3 >" + json.studentServices.academicAdvisors.title + "</h3>";
+      x += "<p>" + json.studentServices.academicAdvisors.description + "</p>";
+
+      // FAQ
+      x += "<h3>" + json.studentServices.academicAdvisors.faq.title + "</h3>";
+      x += "<p><a href='" + json.studentServices.academicAdvisors.faq.contentHref + "'>Link Here</a></p>";
+
+      // Professional
+      x += "<h3>" + json.studentServices.professonalAdvisors.title + "</h3>";
+      $.each(json.studentServices.professonalAdvisors.advisorInformation, function(i, item) {
+        x += "<h3>" + item.name + "</h3>";
+        x += "<p>" + item.department + " - " + item.email + "</p>";
+      });
+
+      // Faculty
+      x += "<h3>" + json.studentServices.facultyAdvisors.title + "</h3>";
+      x += "<p>" + json.studentServices.facultyAdvisors.description + "</p>";
+
+      // IST Minor
+      x += "<h3>" + json.studentServices.istMinorAdvising.title + "</h3>";
+      $.each(json.studentServices.istMinorAdvising.minorAdvisorInformation, function(i, item) {
+        x += "<h3>" + item.title + "</h3>";
+        x += "<p>" + item.advisor + " - " + item.email + "</p>";
+      });
+
+      x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+
+      // Tutors and Lab Information
+      x += "<button class='resources_button' onclick=\"openDialog('tutor-lab-information');\">" + json.tutorsAndLabInformation.title + "</button>";
+      x += "<aside id=\"default-popup-tutor-lab-information\" class=\"avgrund-popup popup_resources\">";
+      x += "<h3>" + json.tutorsAndLabInformation.title + "</h3>";
+      x += "<p>" + json.tutorsAndLabInformation.description + "</p>";
+      x += "<p><a href='" + json.tutorsAndLabInformation.tutoringLabHoursLink + "'>Tutors and Lab Information Hours</a></p>";
+      x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+
+      // Student Ambassadors
+      x += "<button class='resources_button' onclick=\"openDialog('student-ambassadors');\">" + json.studentAmbassadors.title + "</button>";
+      x += "<aside id=\"default-popup-student-ambassadors\" class=\"avgrund-popup popup_resources\">";
+      x += "<h3>" + json.studentAmbassadors.title + "</h3>";
+      x += "<p><img src='" + json.studentAmbassadors.ambassadorsImageSource + "' alt='student ambassadors'/></p>";
+
+      $.each(json.studentAmbassadors.subSectionContent, function(i, item) {
+        x += "<h3>" + item.title + "</h3>";
+        x += "<p>" + item.description + "</p>";
+      });
+      x += "<p><a href='" + json.studentAmbassadors.applicationFormLink + "'>Click here - Google Forms</a></p>";
+      x += "<p>" + json.studentAmbassadors.note + "</p>";
+      x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+
+      // Form for Graduate
+      x += "<button class='resources_button' onclick=\"openDialog('form');\">Forms</button>";
+      x += "<aside id=\"default-popup-form\" class=\"avgrund-popup popup_resources\">";
+      x += "<h3>Form</h3>";
+
+      x += "<h3 >Undergraduate</h2>";
+      $.each(json.forms.undergraduateForms, function(i, item) {
+        x += "<p><a href='" + item.href + "'>" + item.formName + "</a></p>";
+      });
+
+      x += "<h3 >Graduate</h2>";
+      $.each(json.forms.graduateForms, function(i, item) {
+        x += "<p><a href='" + item.href + "'>" + item.formName + "</a></p>";
+      });
+      x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+
+      x += "<button class='resources_button' onclick=\"openDialog('coop-enrollment');\">" + json.coopEnrollment.title + "</button>";
+      x += "<aside id=\"default-popup-coop-enrollment\" class=\"avgrund-popup popup_resources\">";
+      x += "<h3>" + json.coopEnrollment.title + "</h3>";
+      $.each(json.coopEnrollment.enrollmentInformationContent, function(i, item) {
+        x += "<h3 >" + item.title + "</h1>";
+        x += "<p>" + item.description + "</p>";
+      });
+      x += "<p><a href='" + json.coopEnrollment.RITJobZoneGuidelink + "'>RIT Job Zone Guide Link</a></p>";
+      x += '<button class ="closeButton" onclick="closeDialog();">Close</button></aside>';
+
+      x += "</div></div>";
+      $("#section8").html(x);
+    }); /**End**/
+
+    /*********** Contact ***********/
+    myXhr("get", {"path": "/footer/"}, "#section9").done(function(json) {
+      var x = "";
+      x += "<h1 class ='title_font_W'>Contact Us</h1></div>";
+      x += '<iframe id="frame" src="http://ist.rit.edu/api/contactForm/"></iframe>';
+      $('#section9').html(x);
+    }) /**End**/
+
+    /*********** Footer ***********/
+    myXhr("get", {"path": "/footer/"}, "#section10").done(function(json) {
+      var x = "";
+      x += "<h3>" + json.social.title + "</h3>";
+      x += "<p>" + json.social.tweet + json.social.by + "</p>";
+      x += "<a href='" + json.social.twitter + "'>Twiter</a>&nbsp;";
+      x += "<a href='" + json.social.facebook + "'>Facebook</a>&nbsp;";
+
+      $.each(json.quickLinks, function(i, item) {
+        x += "<a href='" + item.href + "'>" + item.title + "</a>&nbsp;";
+      });
+      x += "<p>" + json.copyright.html + "</p>";
+      x += "<a href='" + json.news + "'>" + json.news + "</a>&nbsp;";
+      $("#section10").html(x);
+    }); /**End**/
+
+    function getFac(dom) {
+      myXhr('get', {
+        path: '/people/faculty/username=' + $(dom).attr('data-username')
+      }, null).done(function(json) {
+        console.log(json);
+
+      }); /**End**/
+    }
+    ///////////////////////////////////////////////////
+    //utilities...
+    //data - {path:'/about/'}
+    //(getOrPost, data, idForSpinner)
+    function myXhr(t, d, id) {
+      return $.ajax({
+        type: t,
+        url: 'proxy.php',
+        dataType: 'json',
+        data: d,
+        cache: false,
+        async: true,
+        beforeSend: function() {
+          //PLEASE - get your own spinner that 'fits' your site.
+          //  $(id).append('<img src="gears.gif" class="spin"/>');
+        }
+      }).always(function() {
+        //kill spinner
+        $(id).find('.spin').fadeOut(5000, function() {
+          $(this).remove();
+        });
+      }).fail(function() {
+        //handle failure
+      });
+    }
+
+    /* Open the modal depends on the type */
+    function openDialog(type) {
+      var getType = "#default-popup-" + type;
+      Avgrund.show(getType);
+    }
+
+    /* Hide/close the modal */
+    function closeDialog() {
+      Avgrund.hide();
+    }
+  </script>
+</head>
+
+<body>
+
+  <!-- Fakeloader -->
+  <div class="fakeLoader"></div> <!-- Animated spinner -->
+
+  <div id="fullpage">
+    <!-- Title & Cover Photo -->
+    <div class="section" id="section0">
+      <h1>Rochester Institute of Technology </h1>
+      <h2>Information Sciences &amp; Technologies</h2>
+    </div>
+    <!-- About: Leveraging Technology to solve problems -->
+    <div class="section" id="section1"></div>
+    <!-- Degrees & Minors -->
+    <div class="section" id="section2"></div>
+    <!-- Minors -->
+    <div class="section" id="section3"></div>
+    <!-- Employment -->
+    <div class="section" id="section4"></div>
+    <!-- Map -->
+    <div class="section" id="section5"></div>
+    <!-- People -->
+    <div class="section" id="section6"></div>
+    <!-- Faculty Research -->
+    <div class="section" id="section7"></div>
+    <!-- Resources -->
+    <div class="section" id="section8"></div>
+    <!-- Contact Form -->
+    <div class="section" id="section9"></div>
+    <!-- Footer -->
+    <div class="section" id="section10"></div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"> </script> <!-- Fake loader reference -->
+
+  <!-- JQuery plugin -->
+  <script type="text/javascript" src="assets/fullpage.js"></script>
+  <!-- <script type="text/javascript" src="assets/jquery.simpleslider.js"></script> --->
+  <!-- <script type="text/javascript" src="assets/transit.js"></script> --->
+  <script type="text/javascript" src="assets/js/fakeLoader.min.js"></script>
+  <script type="text/javascript" src="assets/js/jquery.avgrund.js"></script>
+  <script type="text/javascript" src="assets/js/topbutton.js"></script>
+
+  <!-- <script type="text/javascript" src="assets/js/jquery.tabslet.js"></script> -->
+  <script type="text/javascript">
+    var myFullpage = new fullpage('#fullpage', {
+      sectionsColor: ['#E87400', '#E87400', 'whitesmoke', '#E87400', 'whitesmoke', '#E87400', 'whitesmoke', '#E87400', 'whitesmoke', '#E87400', 'whitesmoke'],
+      anchors: ['firstPage', 'secondPage', '3rdPage', '4thpage', '5thpage', '6thpage', '7thpage', '8thpage', '9thpage', '10thpage', 'lastPage'],
+      menu: '#menu',
+      autoScrolling: false,
+      fitToSection: false,
+      css3: true
+    });
+
+    $(document).ready(function() {
+      $(".fakeLoader").fakeLoader({
+        timeToHide: 5000, //Time in milliseconds for fakeLoader disappear
+        zIndex: "4000", //Default zIndex
+        spinner: "spinner1", //Options: 'spinner1', 'spinner2', 'spinner3', 'spinner4', 'spinner5', 'spinner6', 'spinner7'
+        bgColor: "#000", //Hex, RGB or RGBA colors
+        imagePath:"assets/img/tiger.gif" //get rit tiger gif
+
+      });
+    });
+  </script>
+</body>
+
+</html>

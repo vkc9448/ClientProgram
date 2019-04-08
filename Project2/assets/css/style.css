@@ -1,0 +1,302 @@
+body, html {
+  height: 100%;
+  font-family: "arial", Georgia;
+}
+
+/* Section 0 */
+.img {
+  background-position: center;
+  background-size: cover;
+  min-height: 75%;
+}
+
+.section {
+  background-size: cover;
+  text-align: center;
+}
+/* Background */
+#section0 {
+  background-image: url(../img/DSC_6734.jpg);
+  background-size: 100% 100%;
+}
+#section10 {
+  height: 300px !important;
+}
+
+h1 {
+  margin-left: 3%;
+  margin-right: 3%;
+  padding: 0;
+  color: #E87400;
+  text-shadow: 3px 2px #000;
+  font-size: 4em;
+}
+
+h2 {
+  color: #FFFFFF;
+  text-shadow: 3px 2px #000;
+  font-size: 3em;
+}
+
+.title_font_W {
+  /* White */
+  font-size: 5em;
+  color: #FFFFFF;
+  text-shadow: 3px 2px black;
+}
+
+.title_font_O {
+  /* Orange */
+  font-size: 5em;
+  color: #E87400;
+  text-shadow: 3px 2px black;
+}
+
+p {
+  padding: 2px;
+}
+
+/** About **/
+.p_Author {
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 50px;
+  font-size: 15pt;
+}
+
+.author {
+  padding-left: 50px;
+  padding-right: 50px;
+  font-size: 11pt;
+  font-style: italic;
+}
+
+
+/* Tabs */
+/*$('.tabs').tabslet({
+  mouseevent: 'hover',
+  attribute: 'href',
+  animation: false
+});*/
+/** Degree **/
+.degreesButton {
+  width: 26em;
+  background-color: #F36E21;
+  padding: 15px 32px;
+  border: none;
+  color: #FFFFFF;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.degreeFont {
+  font-size: 25pt;
+  color: #000;
+  text-shadow: 2px 2px #FFFFFF
+}
+
+/** Minor **/
+.minorButton {
+  font-weight: bold;
+  text-align: center;
+  width: 35em;
+  height: 5em;
+  background-color: #ffa500;
+  border: none;
+  color: #FFFFFF;
+  font-size: 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 2%;
+  margin-right: 2%;
+}
+
+.closeButton {
+  background-color: #ffa500;
+  border: none;
+  color: #FFFFFF;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 10px 25px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/** Employment **/
+.coop_employment_table {
+  background-color: #ffa500;
+  border: none;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  width: 40em;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 55%;
+  border-radius: 5px;
+  margin-bottom: 2%;
+  padding: 5%;
+}
+
+/** Popup **/
+.avgrund-popup a {
+  background-color: #F36E21;
+  color: white;
+  font-weight: bold;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 5px;
+}
+/** Change Popup position **/
+.popup_faculty {
+  margin: -200px 0 0 -300px !important;
+}
+
+.popup_staff {
+  margin: -200px 0 0 -300px !important;
+}
+
+.popup_interest_area {
+  margin: -200px 0 0 -200px !important;
+}
+.popup_faculty_area {
+  margin: -200px 0 0 -400px !important;
+}
+
+.avgrund-popup a:hover {
+  color: black;
+}
+
+/**** Column ****/
+.statistics_column {
+  width: 25%;
+  float: left;
+  display: block;
+}
+
+.column_container {
+  width: 100%;
+  display: inline-block;
+}
+
+.cDegree {
+  width: 45%;
+  padding: 2%;
+  float: left;
+  display: inline-block;
+}
+
+.employment_column {
+  width: 50%;
+  margin-right: 4%;
+  float: left;
+  display: inline-block;
+}
+
+/** Map **/
+iframe {
+  border-style: solid;
+  width: 100%;
+  text-align: center;
+  margin-left: 5%;
+  width: 1000px;
+  height: 700px;
+}
+
+/** People **/
+.people_faculty {
+  background-color: black;
+}
+.people_button {
+  width: 12em;
+  background-color: #F36E21;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5px;
+  margin-bottom: 2%;
+  margin-right: 2%;
+  padding: 2%;
+}
+.people_img {
+  float: left;
+}
+.people_img img {
+  display: block;
+}
+.people_button:hover, .resources_button:hover, .degreesButton:hover {
+  color: black;
+}
+
+.minorButton:hover, .coop_employment_table:hover, .interest_area_button:hover {
+  color: #F36E21;
+}
+.people_container {
+  overflow: auto;
+}
+.people_content {
+  text-align: left;
+  margin-left: 210px;
+}
+.people_content p {
+  color: black;
+  text-align: left;
+}
+
+/** Scroll to top, check topbutton css **
+/** Research **/
+.interest_area_button {
+  width: 9em;
+  background-color: #ffa500;
+  border: none;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 2%;
+  margin-right: 2%;
+  padding: 2%;
+}
+
+.faculty_area_button {
+  width: 14em;
+  background-color: #ffa500;
+  border: none;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 2%;
+  margin-right: 2%;
+  padding: 2%;
+}
+
+/** Resources **/
+.resources_button {
+  width: 25em;
+  background-color: #F36E21;
+  border: none;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 22px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 2%;
+  margin-right: 2%;
+  padding: 2%;
+}
+/** Footer **/
