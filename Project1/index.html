@@ -1,0 +1,58 @@
+<!--
+ Vincent Cheng
+ Client Program
+ Project 1, Index
+ Bubble Tea Shop
+ 
+IE compatibility fail 
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css"/>
+		<title>Bubble Tea Shop</title>
+		<!-- Call script -->
+		<script type="text/javascript" src="js/data.js"></script>
+		<script type="text/javascript" src="js/script.js"></script>
+		<script type="text/javascript" src="js/createForm.js"></script>
+		<script type="text/javascript" src="js/cookie.js"></script>
+
+		<script>
+			var testIE7 = false; 
+		</script>
+		<!--[if IE 7]>
+			<script type="text/javascript">
+				console.log("This is IE 7");
+				var testIE7 = true;
+			</script>
+		<![endif]-->
+
+		<!-- 
+		Redirected to a link to provide user the access to upgrade their browser if it's IE7
+		-->
+		<!--[if lt IE 7]>
+			<script type="text/javascript">
+				window.location.replace("http://outdatedbrowser.com/en");
+			</script>
+		<![endif]-->
+
+		
+	</head>
+	<body onload="order()">
+		<div id="header">
+			<img src="media/bobatea.gif" alt="logo"> <!-- gif photo is not mine -->
+		</div>
+
+		<div id="border">
+			<!-- Dropdown menu and user will begin the selection -->
+			<div id="orderDrink"></div>
+
+
+			<!-- Reset form -->
+			<div id="orderForm"></div>
+		</div>
+		<img src="media/boba.gif" alt="BobaLife">
+	</body>
+</html>
